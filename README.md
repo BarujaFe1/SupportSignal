@@ -5,7 +5,17 @@
 
   <p><strong>Analytics e triagem para suporte: classificação, SLA, risco de reembolso e causa raiz.</strong></p>
   <p><strong>Support intelligence: classify messages, measure SLA, score refund risk and surface root causes.</strong></p>
+</div>
 
+<p align="center">
+  <a href="https://supportsignal-lab.vercel.app"><strong>🚀 Live Demo</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/BarujaFe1/SupportSignal"><strong>GitHub</strong></a>
+</p>
+
+> **Live demo note:** the public Vercel lab runs a **frontend-first** classifier in the browser (synthetic inbox seed). The FastAPI package remains available for local/API workflows. This is a support **intelligence lab** — **not** a helpdesk and **not** “AI that fully resolves support”.
+
+<div align="center">
   <p>
     <a href="#1-visão-geral--overview">PT-BR / English Overview</a> •
     <a href="#-product-preview">Preview</a> •
@@ -34,14 +44,12 @@
 
 ## 1. Visão Geral / Overview
 
-O **SupportSignal** é um SaaS de analytics e triagem para pequenas operações de suporte que recebem e-mails, tickets, WhatsApp ou formulários e não sabem quais problemas geram retrabalho, cancelamento, reembolso ou churn.
+O **SupportSignal** é um **lab MVP** de analytics e triagem para pequenas operações de suporte: classifica mensagens (regras configuráveis), mede SLA, aponta risco de reembolso e sugere ações de causa raiz a partir de um seed sintético.
 
-Ele classifica mensagens, identifica causas, mede SLA, aponta risco e gera um plano de melhoria. A proposta não é substituir o helpdesk: é uma **camada de inteligência** em cima do suporte existente.
-
-O projeto foi desenvolvido por **Felipe Alirio Baruja** como peça de portfólio no cruzamento de dados, produto e automação pragmática com revisão humana.
+A proposta não é substituir o helpdesk: é uma **camada de inteligência** em cima do suporte existente. O projeto foi desenvolvido por **Felipe Alirio Baruja** como peça de portfólio no cruzamento de dados, produto e automação pragmática com revisão humana.
 
 > **Intelligence Layer Notice**  
-> O SupportSignal prioriza classificação configurável, métricas operacionais e filas de risco com revisão humana. Ele **não** promete automação total de atendimento nem substitui um helpdesk completo.
+> O SupportSignal prioriza classificação configurável, métricas operacionais e filas de risco com revisão humana. Ele **não** promete “IA que resolve suporte”, automação total de atendimento nem substitui um helpdesk completo.
 
 ---
 
@@ -299,20 +307,36 @@ Weekly memo / Action backlog / Dashboard
 
 ## 🚀 Quick Start / Início Rápido
 
-### Pré-requisitos
+### Live Demo
+Abra o lab publicado: **[https://supportsignal-lab.vercel.app](https://supportsignal-lab.vercel.app)**
+
+Checklist rápido na demo:
+1. Banner lab + aviso de escopo (não é helpdesk / não é IA autônoma)
+2. One-click: carregar seed sintético (240 msgs)
+3. Ver topic classifier + SLA
+4. Abrir refund risk board (score ≥ 70)
+5. Ler root-cause explorer + weekly memo + action backlog
+
+### Pré-requisitos (local)
 - **Node.js** v20 ou superior
-- **Python** v3.10+ (preferencialmente 3.12)
+- **Python** v3.10+ (preferencialmente 3.12) — opcional, só para API
 - **Git**
 
-### Opção 1 — Execução integrada no Windows
+### Opção 1 — Lab frontend-first (mesmo modo da Vercel)
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+*Lab em [http://localhost:3000](http://localhost:3000). A classificação roda no browser com `public/data/support_inbox_demo.json`.*
+
+### Opção 2 — Execução integrada no Windows (web + FastAPI)
 ```bash
 start.bat
 ```
 Sobe API em `:8000`, web em `:3000` e abre o navegador.
 
-### Opção 2 — Execução manual
-
-#### 1. Backend FastAPI (`apps/api`)
+### Opção 3 — Backend FastAPI (`apps/api`)
 ```bash
 cd apps/api
 python -m venv .venv
@@ -320,13 +344,6 @@ python -m venv .venv
 source .venv/bin/activate          # Linux/macOS
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
-```
-
-#### 2. Frontend Next.js (`apps/web`)
-```bash
-cd apps/web
-npm install
-npm run dev
 ```
 
 ### Gerar seed e assets (se necessário)

@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { TopicChart } from "@/components/TopicChart";
-import { fetchDemo, fetchWeeklyMemo, runAnalyze } from "@/lib/api";
-import type { AnalysisResponse, DemoSummary, WeeklyMemo } from "@/types";
+import { runLabDemo } from "@/lib/engine/analyzer";
+import type { AnalysisResponse, DemoSummary, WeeklyMemo } from "@/lib/engine/types";
 
 export default function HomePage() {
   const [demo, setDemo] = useState<DemoSummary | null>(null);
@@ -11,66 +11,77 @@ export default function HomePage() {
   const [memo, setMemo] = useState<WeeklyMemo | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [ranOnce, setRanOnce] = useState(false);
 
-  useEffect(() => {
-    startTransition(async () => {
-      try {
-        const [d, a, m] = await Promise.all([
-          fetchDemo(),
-          runAnalyze(),
-          fetchWeeklyMemo(),
-        ]);
-        setDemo(d);
-        setAnalysis(a);
-        setMemo(m);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load SupportSignal API"
-        );
-      }
-    });
-  }, []);
-
-  function refresh() {
+  function runDemo() {
     startTransition(async () => {
       try {
         setError(null);
-        const [a, m] = await Promise.all([runAnalyze(), fetchWeeklyMemo()]);
-        setAnalysis(a);
-        setMemo(m);
+        const result = await runLabDemo();
+        setDemo(result.demo);
+        setAnalysis(result.analysis);
+        setMemo(result.memo);
+        setRanOnce(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Analyze failed");
+        setError(err instanceof Error ? err.message : "Failed to run SupportSignal lab demo");
       }
     });
   }
+
+  useEffect(() => {
+    runDemo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const topRisk = analysis?.messages.filter((m) => m.refund_risk >= 70).slice(0, 6) ?? [];
 
   return (
     <main>
+      <div className="lab-banner">
+        <strong>Lab demo</strong> — classificação heurística + SLA + risco de reembolso em
+        inbox sintética. Camada de inteligência operacional;{" "}
+        <em>não</em> é helpdesk nem “IA que resolve suporte” sozinha. Alto risco exige
+        revisão humana.
+      </div>
+
+      <header className="topbar">
+        <div>
+          <p className="muted" style={{ margin: 0 }}>
+            SupportSignal · portfolio lab
+          </p>
+        </div>
+        <nav className="topnav">
+          <a href="https://barujafe.vercel.app">← Portfólio</a>
+          <a href="https://github.com/BarujaFe1/SupportSignal" target="_blank" rel="noreferrer">
+            GitHub ↗
+          </a>
+        </nav>
+      </header>
+
       <section className="hero">
         <p className="muted">
           Intelligence layer · classificação · SLA · risco de reembolso · causa raiz
         </p>
         <h1 className="brand">SupportSignal</h1>
         <p className="lede">
-          Transforma suporte em inteligência operacional: classifica mensagens,
-          mede SLA, aponta risco de reembolso, explora causa raiz e gera um plano
-          de melhoria — sem substituir o helpdesk existente.
+          Lab MVP: classifica mensagens sintéticas, mede SLA, aponta risco de reembolso e
+          sugere ações de causa raiz. Um clique carrega o seed e gera o cockpit — sem
+          overclaim de automação total de atendimento.
         </p>
         <div className="actions">
-          <button type="button" onClick={refresh} disabled={pending}>
-            {pending ? "Analisando…" : "Reanalisar demo"}
+          <button type="button" onClick={runDemo} disabled={pending}>
+            {pending
+              ? "Analisando inbox…"
+              : ranOnce
+                ? "Reexecutar demo one-click"
+                : "Carregar demo one-click"}
           </button>
+          <span className="badge ok">seed sintético · 240 msgs</span>
+          <span className="badge watch">regras configuráveis</span>
         </div>
       </section>
 
-      {error ? (
-        <div className="notice">
-          API indisponível ({error}). Suba o backend em <code>apps/api</code> na
-          porta 8000.
-        </div>
-      ) : null}
+      {error ? <div className="notice">Falha na demo: {error}</div> : null}
 
       <section className="panel">
         <h2>Inbox demo</h2>
@@ -111,9 +122,7 @@ export default function HomePage() {
           <div className="kpi">
             <span>Breach de SLA</span>
             <strong>
-              {analysis
-                ? `${(analysis.sla_breach_rate * 100).toFixed(0)}%`
-                : "—"}
+              {analysis ? `${(analysis.sla_breach_rate * 100).toFixed(0)}%` : "—"}
             </strong>
           </div>
           <div className="kpi">
@@ -133,7 +142,7 @@ export default function HomePage() {
         {analysis?.topics?.length ? (
           <TopicChart topics={analysis.topics} />
         ) : (
-          <p className="muted">Aguardando análise…</p>
+          <p className="muted">Clique em “Carregar demo one-click” para classificar o seed.</p>
         )}
       </section>
 
@@ -168,7 +177,7 @@ export default function HomePage() {
             {!topRisk.length ? (
               <tr>
                 <td colSpan={5} className="muted">
-                  Nenhum caso de alto risco no momento.
+                  Nenhum caso de alto risco ainda — rode a demo.
                 </td>
               </tr>
             ) : null}
@@ -179,19 +188,26 @@ export default function HomePage() {
       <section className="panel">
         <h2>Root-cause explorer</h2>
         <div className="list">
-          {(analysis?.topics ?? []).slice(0, 5).map((t) => (
-            <article key={t.category}>
-              <h3>
-                {t.category}{" "}
-                <span className="badge">{t.count} msgs</span>
-              </h3>
-              <p className="muted">
-                Share {(t.share * 100).toFixed(0)}% · risco médio{" "}
-                {t.avg_refund_risk.toFixed(0)} · breach{" "}
-                {(t.sla_breach_rate * 100).toFixed(0)}%
-              </p>
-            </article>
-          ))}
+          {(analysis?.topics ?? []).slice(0, 5).map((t) => {
+            const sample = analysis?.messages.find((m) => m.category === t.category);
+            return (
+              <article key={t.category}>
+                <h3>
+                  {t.category} <span className="badge">{t.count} msgs</span>
+                </h3>
+                <p className="muted">
+                  Share {(t.share * 100).toFixed(0)}% · risco médio{" "}
+                  {t.avg_refund_risk.toFixed(0)} · breach{" "}
+                  {(t.sla_breach_rate * 100).toFixed(0)}%
+                </p>
+                {sample ? (
+                  <p className="muted">
+                    Causa sugerida: {sample.root_cause}
+                  </p>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -218,7 +234,7 @@ export default function HomePage() {
             </p>
           </>
         ) : (
-          <p className="muted">Carregando memo…</p>
+          <p className="muted">Memo aparece após a análise do seed.</p>
         )}
       </section>
 

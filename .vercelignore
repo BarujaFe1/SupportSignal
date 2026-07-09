@@ -1,0 +1,12 @@
+# Keep Vercel focused on the Next.js lab app.
+apps/api/**
+apps/api/.venv/**
+**/.venv/**
+**/__pycache__/**
+**/.pytest_cache/**
+**/node_modules/**
+**/.next/**
+data/uploads/**
+scripts/**
+docs/**
+start.bat

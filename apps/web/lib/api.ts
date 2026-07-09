@@ -1,5 +1,7 @@
-import type { AnalysisResponse, DemoSummary, WeeklyMemo } from "@/types";
-
+/**
+ * Optional FastAPI client for local dual-mode development.
+ * The public Vercel lab uses the browser engine in `lib/engine`.
+ */
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 async function getJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -17,14 +19,14 @@ async function getJson<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export function fetchDemo(): Promise<DemoSummary> {
+export function fetchDemo() {
   return getJson("/api/demo");
 }
 
-export function runAnalyze(): Promise<AnalysisResponse> {
+export function runAnalyze() {
   return getJson("/api/analyze", { method: "POST" });
 }
 
-export function fetchWeeklyMemo(): Promise<WeeklyMemo> {
+export function fetchWeeklyMemo() {
   return getJson("/api/report/weekly");
 }
