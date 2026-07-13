@@ -107,7 +107,7 @@ After this quality pass target: **8.3–8.6 / 10** (solid lab demo with tests, C
 - [x] Upload errors handled
 - [x] UX loading/empty/error improved
 - [x] HANDOFF written
-- [ ] Branch pushed (final step)
+- [x] Branch pushed (final step)
 
 ---
 
