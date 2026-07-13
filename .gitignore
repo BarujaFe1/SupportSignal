@@ -44,6 +44,9 @@ Thumbs.db
 .env.production.local
 .env.*.local
 
+# Vercel local link metadata
+.vercel/
+
 # Local Exports & Temp
 tmp/
 temp/

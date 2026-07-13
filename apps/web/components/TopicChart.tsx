@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -18,8 +19,12 @@ export function TopicChart({ topics }: { topics: TopicStat[] }) {
     risk: Math.round(t.avg_refund_risk),
   }));
 
+  const summary = data
+    .map((d) => `${d.category}: ${d.count} msgs, risco médio ${d.risk}`)
+    .join("; ");
+
   return (
-    <div style={{ width: "100%", height: 280 }}>
+    <div style={{ width: "100%", height: 280 }} role="img" aria-label={summary}>
       <ResponsiveContainer>
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
           <CartesianGrid stroke="rgba(148,163,184,0.15)" vertical={false} />
@@ -32,10 +37,12 @@ export function TopicChart({ topics }: { topics: TopicStat[] }) {
               borderRadius: 8,
             }}
           />
+          <Legend />
           <Bar dataKey="count" fill="#38bdf8" radius={[6, 6, 0, 0]} name="Mensagens" />
           <Bar dataKey="risk" fill="#f59e0b" radius={[6, 6, 0, 0]} name="Risco médio" />
         </BarChart>
       </ResponsiveContainer>
+      <p className="sr-only">{summary}</p>
     </div>
   );
 }

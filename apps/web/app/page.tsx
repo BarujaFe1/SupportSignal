@@ -1,6 +1,15 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import {
+  Kpi,
+  LabBanner,
+  LoadingSkeleton,
+  Panel,
+  SectionNav,
+  TopBar,
+} from "@/components/LabChrome";
+import { RefundRiskTable } from "@/components/RefundRiskTable";
 import { TopicChart } from "@/components/TopicChart";
 import { runLabDemo } from "@/lib/engine/analyzer";
 import type { AnalysisResponse, DemoSummary, WeeklyMemo } from "@/lib/engine/types";
@@ -23,40 +32,28 @@ export default function HomePage() {
         setMemo(result.memo);
         setRanOnce(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to run SupportSignal lab demo");
+        setError(
+          err instanceof Error ? err.message : "Failed to run SupportSignal lab demo"
+        );
       }
     });
   }
 
   useEffect(() => {
     runDemo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const topRisk = analysis?.messages.filter((m) => m.refund_risk >= 70).slice(0, 6) ?? [];
+  const topRisk =
+    analysis?.messages.filter((m) => m.refund_risk >= 70).slice(0, 6) ?? [];
+  const showSkeleton = pending && !analysis;
 
   return (
     <main>
-      <div className="lab-banner">
-        <strong>Lab demo</strong> — classificação heurística + SLA + risco de reembolso em
-        inbox sintética. Camada de inteligência operacional;{" "}
-        <em>não</em> é helpdesk nem “IA que resolve suporte” sozinha. Alto risco exige
-        revisão humana.
-      </div>
-
-      <header className="topbar">
-        <div>
-          <p className="muted" style={{ margin: 0 }}>
-            SupportSignal · portfolio lab
-          </p>
-        </div>
-        <nav className="topnav">
-          <a href="https://barujafe.vercel.app">← Portfólio</a>
-          <a href="https://github.com/BarujaFe1/SupportSignal" target="_blank" rel="noreferrer">
-            GitHub ↗
-          </a>
-        </nav>
-      </header>
+      <a className="skip-link" href="#cockpit">
+        Ir para o cockpit
+      </a>
+      <LabBanner />
+      <TopBar />
 
       <section className="hero">
         <p className="muted">
@@ -69,7 +66,7 @@ export default function HomePage() {
           overclaim de automação total de atendimento.
         </p>
         <div className="actions">
-          <button type="button" onClick={runDemo} disabled={pending}>
+          <button type="button" onClick={runDemo} disabled={pending} aria-busy={pending}>
             {pending
               ? "Analisando inbox…"
               : ranOnce
@@ -81,181 +78,177 @@ export default function HomePage() {
         </div>
       </section>
 
-      {error ? <div className="notice">Falha na demo: {error}</div> : null}
+      <SectionNav />
 
-      <section className="panel">
-        <h2>Inbox demo</h2>
-        <div className="grid">
-          <div className="kpi">
-            <span>Mensagens</span>
-            <strong>{demo?.rows ?? analysis?.total_messages ?? "—"}</strong>
-          </div>
-          <div className="kpi">
-            <span>Canais</span>
-            <strong>{demo?.channels.length ?? "—"}</strong>
-          </div>
-          <div className="kpi">
-            <span>Abertas</span>
-            <strong>{analysis?.open_messages ?? "—"}</strong>
-          </div>
-          <div className="kpi">
-            <span>Alto risco</span>
-            <strong>{analysis?.high_refund_risk_count ?? "—"}</strong>
-          </div>
+      {error ? (
+        <div className="notice" role="alert">
+          Falha na demo: {error}
         </div>
-        <p className="muted" style={{ marginTop: "0.85rem" }}>
-          {demo?.notice}
-        </p>
-      </section>
+      ) : null}
 
-      <section className="panel">
-        <h2>SLA & risco</h2>
-        <div className="grid">
-          <div className="kpi">
-            <span>1ª resposta (média)</span>
-            <strong>
-              {analysis?.avg_first_response_hours != null
-                ? `${analysis.avg_first_response_hours}h`
-                : "—"}
-            </strong>
-          </div>
-          <div className="kpi">
-            <span>Breach de SLA</span>
-            <strong>
-              {analysis ? `${(analysis.sla_breach_rate * 100).toFixed(0)}%` : "—"}
-            </strong>
-          </div>
-          <div className="kpi">
-            <span>Temas emergentes</span>
-            <strong>{analysis?.emerging_themes.length ?? "—"}</strong>
-          </div>
-        </div>
-        {analysis?.emerging_themes?.length ? (
-          <p className="muted" style={{ marginTop: "0.85rem" }}>
-            {analysis.emerging_themes.join(" · ")}
-          </p>
-        ) : null}
-      </section>
-
-      <section className="panel">
-        <h2>Topic classifier</h2>
-        {analysis?.topics?.length ? (
-          <TopicChart topics={analysis.topics} />
-        ) : (
-          <p className="muted">Clique em “Carregar demo one-click” para classificar o seed.</p>
-        )}
-      </section>
-
-      <section className="panel">
-        <h2>Refund risk board</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Categoria</th>
-              <th>Risco</th>
-              <th>SLA</th>
-              <th>Preview</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topRisk.map((m) => (
-              <tr key={m.message_id}>
-                <td>{m.message_id}</td>
-                <td>{m.category}</td>
-                <td>
-                  <span className="badge risk">{m.refund_risk}</span>
-                </td>
-                <td>
-                  <span className={`badge ${m.sla_breach ? "watch" : "ok"}`}>
-                    {m.sla_breach ? "breach" : "ok"}
-                  </span>
-                </td>
-                <td className="muted">{m.masked_preview}</td>
-              </tr>
-            ))}
-            {!topRisk.length ? (
-              <tr>
-                <td colSpan={5} className="muted">
-                  Nenhum caso de alto risco ainda — rode a demo.
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
-      </section>
-
-      <section className="panel">
-        <h2>Root-cause explorer</h2>
-        <div className="list">
-          {(analysis?.topics ?? []).slice(0, 5).map((t) => {
-            const sample = analysis?.messages.find((m) => m.category === t.category);
-            return (
-              <article key={t.category}>
-                <h3>
-                  {t.category} <span className="badge">{t.count} msgs</span>
-                </h3>
-                <p className="muted">
-                  Share {(t.share * 100).toFixed(0)}% · risco médio{" "}
-                  {t.avg_refund_risk.toFixed(0)} · breach{" "}
-                  {(t.sla_breach_rate * 100).toFixed(0)}%
-                </p>
-                {sample ? (
-                  <p className="muted">
-                    Causa sugerida: {sample.root_cause}
-                  </p>
-                ) : null}
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="panel">
-        <h2>Weekly support memo</h2>
-        {memo ? (
-          <>
-            <p className="muted">{memo.period_label}</p>
-            <p>{memo.executive_summary}</p>
-            <div className="list" style={{ marginTop: "1rem" }}>
-              {memo.recommended_actions.map((a) => (
-                <article key={a.title}>
-                  <h3>
-                    <span className="badge watch">{a.priority}</span> {a.title}
-                  </h3>
-                  <p className="muted">
-                    {a.rationale} · Owner: {a.owner_hint}
-                  </p>
-                </article>
-              ))}
-            </div>
-            <p className="muted" style={{ marginTop: "1rem" }}>
-              {memo.caveats.join(" ")}
-            </p>
-          </>
-        ) : (
-          <p className="muted">Memo aparece após a análise do seed.</p>
-        )}
-      </section>
-
-      <section className="panel">
-        <h2>Action backlog</h2>
-        <div className="list">
-          {(analysis?.actions ?? []).map((a) => (
-            <article key={`${a.priority}-${a.title}`}>
-              <h3>
-                <span className="badge">{a.priority}</span> {a.title}
-              </h3>
-              <p className="muted">
-                {a.rationale} · {a.owner_hint}
+      <div id="cockpit">
+        <Panel id="inbox" title="Inbox demo">
+          {showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <div className="grid">
+                <Kpi
+                  label="Mensagens"
+                  value={demo?.rows ?? analysis?.total_messages ?? "—"}
+                />
+                <Kpi label="Canais" value={demo?.channels.length ?? "—"} />
+                <Kpi label="Abertas" value={analysis?.open_messages ?? "—"} />
+                <Kpi
+                  label="Alto risco"
+                  value={analysis?.high_refund_risk_count ?? "—"}
+                />
+              </div>
+              <p className="muted" style={{ marginTop: "0.85rem" }}>
+                {demo?.notice ??
+                  "Rode a demo one-click para carregar o seed sintético mascarado."}
               </p>
-            </article>
-          ))}
-        </div>
-        <p className="muted" style={{ marginTop: "0.85rem" }}>
-          {analysis?.notice}
-        </p>
-      </section>
+            </>
+          )}
+        </Panel>
+
+        <Panel id="sla" title="SLA & risco">
+          {showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <div className="grid">
+                <Kpi
+                  label="1ª resposta (média)"
+                  value={
+                    analysis?.avg_first_response_hours != null
+                      ? `${analysis.avg_first_response_hours}h`
+                      : "—"
+                  }
+                />
+                <Kpi
+                  label="Breach de SLA"
+                  value={
+                    analysis
+                      ? `${(analysis.sla_breach_rate * 100).toFixed(0)}%`
+                      : "—"
+                  }
+                />
+                <Kpi
+                  label="Temas emergentes"
+                  value={analysis?.emerging_themes.length ?? "—"}
+                />
+              </div>
+              {analysis?.emerging_themes?.length ? (
+                <p className="muted" style={{ marginTop: "0.85rem" }}>
+                  {analysis.emerging_themes.join(" · ")}
+                </p>
+              ) : null}
+            </>
+          )}
+        </Panel>
+
+        <Panel id="topics" title="Topic classifier">
+          {analysis?.topics?.length ? (
+            <TopicChart topics={analysis.topics} />
+          ) : showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <p className="muted">
+              Clique em “Carregar demo one-click” para classificar o seed.
+            </p>
+          )}
+        </Panel>
+
+        <Panel id="refund-risk" title="Refund risk board">
+          {showSkeleton ? <LoadingSkeleton /> : <RefundRiskTable rows={topRisk} />}
+        </Panel>
+
+        <Panel id="root-cause" title="Root-cause explorer">
+          {showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <div className="list">
+              {(analysis?.topics ?? []).slice(0, 5).map((t) => {
+                const sample = analysis?.messages.find((m) => m.category === t.category);
+                return (
+                  <article key={t.category}>
+                    <h3>
+                      {t.category} <span className="badge">{t.count} msgs</span>
+                    </h3>
+                    <p className="muted">
+                      Share {(t.share * 100).toFixed(0)}% · risco médio{" "}
+                      {t.avg_refund_risk.toFixed(0)} · breach{" "}
+                      {(t.sla_breach_rate * 100).toFixed(0)}%
+                    </p>
+                    {sample ? (
+                      <p className="muted">Causa sugerida: {sample.root_cause}</p>
+                    ) : null}
+                  </article>
+                );
+              })}
+              {!analysis?.topics?.length ? (
+                <p className="muted">Sem temas ainda — rode a demo.</p>
+              ) : null}
+            </div>
+          )}
+        </Panel>
+
+        <Panel id="memo" title="Weekly support memo">
+          {memo ? (
+            <>
+              <p className="muted">{memo.period_label}</p>
+              <p>{memo.executive_summary}</p>
+              <div className="list" style={{ marginTop: "1rem" }}>
+                {memo.recommended_actions.map((a) => (
+                  <article key={a.title}>
+                    <h3>
+                      <span className="badge watch">{a.priority}</span> {a.title}
+                    </h3>
+                    <p className="muted">
+                      {a.rationale} · Owner: {a.owner_hint}
+                    </p>
+                  </article>
+                ))}
+              </div>
+              <p className="muted" style={{ marginTop: "1rem" }}>
+                {memo.caveats.join(" ")}
+              </p>
+            </>
+          ) : showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <p className="muted">Memo aparece após a análise do seed.</p>
+          )}
+        </Panel>
+
+        <Panel id="actions" title="Action backlog">
+          {showSkeleton ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <div className="list">
+                {(analysis?.actions ?? []).map((a) => (
+                  <article key={`${a.priority}-${a.title}`}>
+                    <h3>
+                      <span className="badge">{a.priority}</span> {a.title}
+                    </h3>
+                    <p className="muted">
+                      {a.rationale} · {a.owner_hint}
+                    </p>
+                  </article>
+                ))}
+                {!analysis?.actions?.length ? (
+                  <p className="muted">Nenhuma ação ainda — rode a demo.</p>
+                ) : null}
+              </div>
+              <p className="muted" style={{ marginTop: "0.85rem" }}>
+                {analysis?.notice}
+              </p>
+            </>
+          )}
+        </Panel>
+      </div>
     </main>
   );
 }

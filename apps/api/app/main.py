@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -7,17 +9,22 @@ app = FastAPI(
     title="SupportSignal API",
     description=(
         "Support intelligence layer: classify messages, measure SLA, "
-        "score refund risk, explore root causes and generate weekly action memos."
+        "score refund risk, explore root causes and generate weekly action memos. "
+        "Lab/MVP scope — heuristics + human review, not a full helpdesk."
     ),
-    version="0.1.0",
+    version="0.1.1",
 )
+
+_default_origins = "http://localhost:3000,http://127.0.0.1:3000"
+_cors = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", _default_origins).split(",")
+    if origin.strip()
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_cors,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

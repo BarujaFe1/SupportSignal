@@ -1,459 +1,169 @@
-<div align="center">
-  <img src="./assets/icon.png" alt="SupportSignal Logo" width="120" height="120" />
+# SupportSignal
 
-  <h1>SupportSignal</h1>
+**Tagline:** Camada de inteligência para suporte pequeno — classifica mensagens, mede SLA, aponta risco de reembolso e transforma sintomas em causa raiz.
 
-  <p><strong>Analytics e triagem para suporte: classificação, SLA, risco de reembolso e causa raiz.</strong></p>
-  <p><strong>Support intelligence: classify messages, measure SLA, score refund risk and surface root causes.</strong></p>
-</div>
+![SupportSignal overview](./assets/hero-cover.png)
 
 <p align="center">
-  <a href="https://supportsignal-lab.vercel.app"><strong>🚀 Live Demo</strong></a>
-  &nbsp;·&nbsp;
+  <a href="https://supportsignal-lab.vercel.app"><strong>Live Demo</strong></a>
+  ·
   <a href="https://github.com/BarujaFe1/SupportSignal"><strong>GitHub</strong></a>
+  ·
+  <a href="https://barujafe.vercel.app"><strong>Portfólio</strong></a>
 </p>
 
-> **Live demo note:** the public Vercel lab runs a **frontend-first** classifier in the browser (synthetic inbox seed). The FastAPI package remains available for local/API workflows. This is a support **intelligence lab** — **not** a helpdesk and **not** “AI that fully resolves support”.
-
-<div align="center">
-  <p>
-    <a href="#1-visão-geral--overview">PT-BR / English Overview</a> •
-    <a href="#-product-preview">Preview</a> •
-    <a href="#-screenshots">Screenshots</a> •
-    <a href="#️-stack--tecnologias">Stack</a> •
-    <a href="#-arquitetura--architecture">Architecture</a> •
-    <a href="#-quick-start--início-rápido">Quick Start</a> •
-    <a href="#-autor--author">Author</a>
-  </p>
-
-  <p>
-    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=nextdotjs" />
-    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-React-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-    <img alt="Python" src="https://img.shields.io/badge/Python-Analytics-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-    <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
-    <img alt="Support Intel" src="https://img.shields.io/badge/Support-Intelligence%20Layer-38BDF8?style=for-the-badge" />
-    <img alt="Human Review" src="https://img.shields.io/badge/Human--in--the--Loop-Refund%20Risk-22C55E?style=for-the-badge" />
-  </p>
-</div>
-
-<p align="center">
-  <img src="./assets/hero-cover.png" alt="SupportSignal product overview" width="100%" />
-</p>
+> **Lab scope:** demo pública frontend-first com seed sintético. Heurísticas explicáveis + revisão humana. **Não** é helpdesk e **não** é “IA que resolve suporte” sozinha.
 
 ---
 
-## 1. Visão Geral / Overview
+## Problema real
 
-O **SupportSignal** é um **lab MVP** de analytics e triagem para pequenas operações de suporte: classifica mensagens (regras configuráveis), mede SLA, aponta risco de reembolso e sugere ações de causa raiz a partir de um seed sintético.
+Pequenas operações (SaaS, e-commerce, infoprodutos, escolas) atendem no Gmail/WhatsApp/helpdesk simples e acumulam sintomas: cobrança confusa, onboarding ruim, bugs, atraso, pedido de reembolso. O time gasta tempo todos os dias sem ver causa raiz, SLA quebrado ou fila de risco.
 
-A proposta não é substituir o helpdesk: é uma **camada de inteligência** em cima do suporte existente. O projeto foi desenvolvido por **Felipe Alirio Baruja** como peça de portfólio no cruzamento de dados, produto e automação pragmática com revisão humana.
+## Solução
 
-> **Intelligence Layer Notice**  
-> O SupportSignal prioriza classificação configurável, métricas operacionais e filas de risco com revisão humana. Ele **não** promete “IA que resolve suporte”, automação total de atendimento nem substitui um helpdesk completo.
+SupportSignal é uma **intelligence layer** sobre o suporte existente:
 
----
+1. importa/carrega inbox (demo seed ou CSV local via API);
+2. classifica temas com regras configuráveis;
+3. mede primeira resposta e breaches de SLA;
+4. pontua risco de reembolso com drivers explicáveis;
+5. agrega causa raiz + memo semanal + backlog de ações.
 
-## ✨ Product Preview
+## Principais funcionalidades
 
-<p align="center">
-  <img src="./assets/screenshots/01-support-intelligence-cockpit.png" alt="SupportSignal Intelligence Cockpit" width="100%" />
-</p>
+- **Demo one-click** com 240 mensagens sintéticas
+- **Topic classifier** (billing, refund, bug, onboarding, delivery, …)
+- **SLA dashboard** (média de 1ª resposta + taxa de breach)
+- **Refund risk board** (score ≥ 70 + drivers)
+- **Root-cause explorer** e **weekly memo**
+- **Action backlog** priorizado (P0–P2)
+- **FastAPI local** com upload CSV validado
 
-O SupportSignal apresenta uma inbox analítica focada em operação: temas dominantes, SLA, board de risco de reembolso, explorer de causa raiz e memo semanal com ações recomendadas.
-
----
-
-## 2. Por que este projeto importa? / Why this project matters
-
-* **Suporte vira caixa-preta:** Mensagens acumulam sintomas de cobrança confusa, onboarding ruim, bugs e entrega atrasada — mas a operação só vê volume.
-* **Retrabalho e churn escondidos:** Sem classificação e risco, o time apaga incêndio sem atacar causa raiz.
-* **IA com pragmatismo:** O MVP usa regras configuráveis e scores explicáveis; risco alto exige revisão humana.
-* **Diferenciação clara:** Não é mais um helpdesk. É inteligência operacional sobre o canal que o time já usa.
-
----
-
-## 🧠 O diferencial do SupportSignal / What makes SupportSignal different
-
-### Português
-O SupportSignal não tenta ser a ferramenta onde o agente responde tickets. Ele mostra:
-- quais temas dominam a fila;
-- onde o SLA quebra;
-- quais mensagens cheiram a reembolso/chargeback;
-- qual causa raiz merece backlog de produto;
-- quais ações cabem no memo semanal do founder.
-
-### English
-SupportSignal is not another agent inbox. It shows:
-- which topics dominate the queue;
-- where SLA breaks;
-- which messages look like refund/chargeback risk;
-- which root causes deserve a product backlog item;
-- which actions belong in the founder’s weekly memo.
-
----
-
-## 🎯 Problema que resolve / The problem it solves
-
-Em operações reais de suporte (100–5.000 mensagens/mês), é comum:
-- atender no Gmail/WhatsApp/helpdesk simples sem visão agregada;
-- repetir as mesmas explicações sem medir causa;
-- descobrir churn/reembolso tarde demais;
-- não ter SLA confiável de primeira resposta;
-- misturar sintoma (“cliente bravo”) com causa (“onboarding quebrado”).
-
-O **SupportSignal** cria uma camada auditável entre a mensagem bruta e a decisão operacional.
-
----
-
-## 🧩 Proposta / Analytical Pipeline
-
-```txt
-CSV / Demo Inbox / (future) Gmail·Zendesk·WhatsApp
-  ↓
-Parsing e normalização de mensagens
-  ↓
-Classificação por categoria (regras configuráveis)
-  ↓
-Sentimento / urgência
-  ↓
-SLA de primeira resposta + breach flags
-  ↓
-Refund risk score explicável
-  ↓
-Root-cause explorer + temas emergentes
-  ↓
-Weekly memo + action backlog
-```
-
----
-
-## 📸 Screenshots
-
-<table>
-  <tr>
-    <td width="50%">
-      <img src="./assets/screenshots/02-topic-classifier.png" alt="Topic Classifier" />
-      <br />
-      <sub><strong>Topic Classifier</strong> — categorias, volume e risco médio por tema.</sub>
-    </td>
-    <td width="50%">
-      <img src="./assets/screenshots/03-sla-dashboard.png" alt="SLA Dashboard" />
-      <br />
-      <sub><strong>SLA Dashboard</strong> — primeira resposta, breaches e fila aberta.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="./assets/screenshots/04-refund-risk-board.png" alt="Refund Risk Board" />
-      <br />
-      <sub><strong>Refund Risk Board</strong> — watchlist com score e drivers explicáveis.</sub>
-    </td>
-    <td width="50%">
-      <img src="./assets/screenshots/05-root-cause-explorer.png" alt="Root Cause Explorer" />
-      <br />
-      <sub><strong>Root-Cause Explorer</strong> — temas ligados a hipóteses de causa operacional.</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="./assets/screenshots/06-weekly-support-memo.png" alt="Weekly Support Memo" />
-      <br />
-      <sub><strong>Weekly Support Memo</strong> — resumo executivo para founder/CS.</sub>
-    </td>
-    <td width="50%">
-      <img src="./assets/screenshots/07-action-backlog.png" alt="Action Backlog" />
-      <br />
-      <sub><strong>Action Backlog</strong> — P0/P1/P2 com owner hint e racional.</sub>
-    </td>
-  </tr>
-</table>
-
-<p align="center">
-  <img src="./assets/screenshots/08-message-import.png" alt="Message Import" width="70%" />
-</p>
-
----
-
-## 📌 Estudo de Caso / Case Study
-
-### 📌 Estudo de Caso: Inbox sintética de SaaS/e-commerce
-A base demo simula **240 mensagens** em e-mail, WhatsApp e formulário, cobrindo cobrança, reembolso, bugs, onboarding, entrega, clareza de produto e acesso. O SupportSignal classifica temas, calcula SLA, monta a fila de alto risco e gera um memo semanal com ações.
-
-### 📌 Case Study: Synthetic SaaS/e-commerce inbox
-The demo dataset simulates **240 messages** across email, WhatsApp and forms covering billing, refunds, bugs, onboarding, delivery, product clarity and account access. SupportSignal classifies topics, computes SLA, builds the high-risk queue and produces a weekly memo with actions.
-
----
-
-## 🧭 Visual Story / Jornada Analítica
-
-```txt
-1. Carregar inbox demo (CSV sintético)
-2. Ler cockpit: volume, abertas, alto risco
-3. Inspecionar topic classifier e temas emergentes
-4. Medir SLA e breaches
-5. Abrir refund risk board (score ≥ 70)
-6. Explorar causa raiz por categoria
-7. Ler weekly memo
-8. Priorizar action backlog (P0–P2)
-```
-
----
-
-## ⚙️ Funcionalidades Principais / Core Features
-
-### Message Import
-Importação de CSV/demo com campos de mensagem, canal, timestamps e status. Upload endpoint preparado para CSV do operador.
-
-### Topic Classifier
-Classificação heurística configurável por dicionários de palavras-chave (MVP), com caminho claro para modelos assistidos + revisão humana.
-
-### SLA Dashboard
-Tempo até primeira resposta, taxa de breach e mensagens abertas sem resposta.
-
-### Refund Risk Board
-Score 0–100 com drivers (categoria, sentimento, urgência, linguagem de chargeback, contato repetido).
-
-### Root-Cause Explorer
-Mapeia categorias para hipóteses de causa operacional acionáveis por produto/CS.
-
-### Weekly Support Memo
-Resumo executivo + watchlist + ações recomendadas + caveats explícitos.
-
-### Action Backlog
-Backlog priorizado para reduzir retrabalho e atacar o que está quebrando na operação.
-
----
-
-## 🛠️ Stack / Tecnologias
-
-### Frontend
-- **Framework:** Next.js 15 (App Router) & React 19
-- **Linguagem:** TypeScript
-- **Gráficos:** Recharts
-- **Ícones:** Lucide Icons
-
-### Backend
-- **Framework API:** FastAPI & Uvicorn (Python 3.12)
-- **Modelagem:** Pydantic v2
-- **Dados:** Pandas
-- **Testes:** Pytest
-
-### Produto / Ops (roadmap)
-- Supabase, filas, Gmail API, Stripe/Mercado Pago, PostHog, Sentry
-
----
-
-## 🧱 Arquitetura / Architecture
+## Arquitetura
 
 ```text
-SupportSignal/
-├── apps/
-│   ├── web/                         # Frontend Next.js (App Router)
-│   │   ├── app/                     # Página principal do cockpit
-│   │   ├── components/              # TopicChart e UI analítica
-│   │   ├── lib/                     # API client
-│   │   └── types/                   # Tipos TypeScript
-│   │
-│   └── api/                         # Backend FastAPI
-│       ├── app/
-│       │   ├── api/                 # /demo /analyze /report /methodology
-│       │   ├── models/              # Schemas Pydantic
-│       │   └── services/            # classifier, SLA, risk, memo
-│       └── tests/                   # Pytest
-│
-├── data/
-│   └── seed/                        # support_inbox_demo.csv
-│
-├── docs/                            # Pitch, roadmap, metodologia
-├── assets/                          # Ícone, hero, screenshots
-├── scripts/                         # generate_assets_and_seed.py
-├── start.bat                        # Inicializador Windows
-└── README.md
+CSV / Demo JSON
+  → classify (heuristics)
+  → SLA + refund risk
+  → topics / memo / actions
+  → Next.js cockpit (Vercel)  |  FastAPI (local)
 ```
 
----
+Detalhes: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) · decisões: [`docs/TECHNICAL_DECISIONS.md`](./docs/TECHNICAL_DECISIONS.md)
 
-## 🧱 Visual Architecture
+## Stack
 
-<p align="center">
-  <img src="./assets/architecture-pipeline.png" alt="SupportSignal visual architecture" width="100%" />
-</p>
+| Camada | Tecnologia |
+|---|---|
+| Lab UI | Next.js 15, React 19, TypeScript, Recharts |
+| Browser engine | TypeScript heuristics (`apps/web/lib/engine`) |
+| API | FastAPI, Pydantic, Pandas, Pytest |
+| Deploy | Vercel (`apps/web`) |
 
-SupportSignal follows a traceable support-intelligence flow: raw messages enter, get classified, scored for SLA/risk, aggregated into root causes and exported as memo/actions.
+## Demo local
 
----
+### Lab frontend-first (mesmo modo da Vercel)
 
-## 🔁 Data Flow Pipeline
-
-```txt
-Raw Messages (CSV / Demo)
-  ↓
-Normalize channels & timestamps
-  ↓
-Category classification (configurable rules)
-  ↓
-Sentiment + urgency heuristics
-  ↓
-SLA computation & breach flags
-  ↓
-Refund risk scoring (explainable drivers)
-  ↓
-Topic aggregation + emerging themes
-  ↓
-Weekly memo / Action backlog / Dashboard
-```
-
----
-
-## 🚀 Quick Start / Início Rápido
-
-### Live Demo
-Abra o lab publicado: **[https://supportsignal-lab.vercel.app](https://supportsignal-lab.vercel.app)**
-
-Checklist rápido na demo:
-1. Banner lab + aviso de escopo (não é helpdesk / não é IA autônoma)
-2. One-click: carregar seed sintético (240 msgs)
-3. Ver topic classifier + SLA
-4. Abrir refund risk board (score ≥ 70)
-5. Ler root-cause explorer + weekly memo + action backlog
-
-### Pré-requisitos (local)
-- **Node.js** v20 ou superior
-- **Python** v3.10+ (preferencialmente 3.12) — opcional, só para API
-- **Git**
-
-### Opção 1 — Lab frontend-first (mesmo modo da Vercel)
 ```bash
 cd apps/web
 npm install
 npm run dev
 ```
-*Lab em [http://localhost:3000](http://localhost:3000). A classificação roda no browser com `public/data/support_inbox_demo.json`.*
 
-### Opção 2 — Execução integrada no Windows (web + FastAPI)
+Abra [http://localhost:3000](http://localhost:3000) e use **Carregar demo one-click**.
+
+### Windows integrado (web + API)
+
 ```bash
 start.bat
 ```
-Sobe API em `:8000`, web em `:3000` e abre o navegador.
 
-### Opção 3 — Backend FastAPI (`apps/api`)
+### API FastAPI
+
 ```bash
 cd apps/api
 python -m venv .venv
-.venv\Scripts\activate            # Windows
-source .venv/bin/activate          # Linux/macOS
+.venv\Scripts\activate   # Windows
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-### Gerar seed e assets (se necessário)
-```bash
-python scripts/generate_assets_and_seed.py
-```
+## Variáveis de ambiente
 
----
+Veja [`.env.example`](./.env.example). A demo pública **não exige secrets**.  
+`NEXT_PUBLIC_API_URL` e `CORS_ORIGINS` importam só no modo dual local.
 
-## 🧪 Scripts e Testes / Scripts and Testing
+## Testes
 
 ```bash
-cd apps/api
-.venv\Scripts\python -m pytest
+# API
+cd apps/api && pytest -q && ruff check app tests
+
+# Web
+cd apps/web && npm test && npm run typecheck && npm run lint && npm run build
 ```
 
-```bash
-cd apps/web
-npm run lint
-npm run typecheck
-npm run build
-```
+Guia: [`docs/TESTING.md`](./docs/TESTING.md) · Deploy: [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)
 
----
+## Decisões técnicas e trade-offs
 
-## 🛡️ Segurança, privacidade e boas práticas
+- Heurísticas antes de LLM opaco → explicabilidade e custo previsível
+- Frontend-first na Vercel → demo estável sem hospedar Python
+- Dual engine Python/TS → risco de drift mitigado por testes em ambos os lados
+- Seed sintético → privacidade e reprodutibilidade
 
-* Previews mascaram e-mails no dashboard.
-* Dataset demo é sintético e anonimizado.
-* `.env` real fica fora do Git (`.env.example` apenas).
-* Alto risco de reembolso exige revisão humana.
-* MVP não envia respostas automáticas a clientes.
+## Roadmap
 
----
+- **Agora (lab MVP):** seed, classifier, SLA, refund risk, memo, CI/docs
+- **Fase 2:** conectores (Gmail/Zendesk/WhatsApp), alertas de spike, replies sugeridas com aprovação humana
+- **Fase 3:** workflow de melhoria de produto, near-real-time, benchmarking
 
-## 🧭 Roadmap do Produto
+Non-goals iniciais: helpdesk completo, auto-atendimento sem revisão, dependência cega de LLM.
 
-* **MVP:** import CSV/demo, classifier, SLA, refund risk, root-cause, weekly memo
-* **Fase 2:** conectores Gmail/Zendesk/Intercom/WhatsApp, alertas, replies sugeridas
-* **Fase 3:** workflow de melhoria de produto, roteamento, near-real-time, benchmarking
+## Status atual
 
-Detalhes em [docs/product_roadmap.md](./docs/product_roadmap.md).
+| Item | Status |
+|---|---|
+| Live demo | Pública (Vercel lab) |
+| Seed sintético | 240 msgs |
+| API local | Estável + testes de upload |
+| CI | GitHub Actions |
+| Auth / billing | Fora do lab |
 
----
+## O que este projeto demonstra
 
-## 💼 Valor para Portfólio / Portfolio Value
+- Produto B2B com tese clara (intelligence layer)
+- NLP/classificação pragmática e testável
+- Analytics operacional acionável (SLA, risco, causa raiz)
+- Responsabilidade: mascaramento, caveats, human review
+- Entrega full-stack (Next + FastAPI) com demo pública
 
-O SupportSignal demonstra:
-- produto B2B com tese de monetização por volume;
-- NLP/classificação aplicada com pragmatismo;
-- analytics operacional acionável;
-- UX de inteligência (não só gráficos);
-- disciplina de não prometer helpdesk completo.
+## Como eu apresentaria em entrevista
 
----
+1. Abrir Live Demo e o banner de escopo (lab ≠ helpdesk).  
+2. One-click → mostrar topics + SLA breach.  
+3. Abrir refund risk board e ler **drivers** (explicabilidade).  
+4. Fechar no weekly memo / action backlog (de sintoma → ação).  
+5. Explicar trade-off: heurística primeiro; LLM só com revisão humana depois.
 
-## 📚 Documentação Complementar
+## Screenshots
 
-- [docs/portfolio_pitch.md](./docs/portfolio_pitch.md) — pitch e roteiro de demo
-- [docs/product_roadmap.md](./docs/product_roadmap.md) — fases e non-goals
-- [docs/technical_methodology.md](./docs/technical_methodology.md) — classificação, SLA e risco
+<p align="center">
+  <img src="./assets/screenshots/01-support-intelligence-cockpit.png" alt="Cockpit" width="90%" />
+</p>
 
----
+<table>
+  <tr>
+    <td><img src="./assets/screenshots/04-refund-risk-board.png" alt="Refund risk" /></td>
+    <td><img src="./assets/screenshots/06-weekly-support-memo.png" alt="Weekly memo" /></td>
+  </tr>
+</table>
 
-## 🖼️ GitHub Social Preview
+## Autor
 
-```txt
-assets/social-preview.png
-```
-Dimensão recomendada: 1280x640. Upload em Repository Settings → Social Preview.
+**Felipe Alirio Baruja** · [Portfólio](https://barujafe.vercel.app/) · [GitHub](https://github.com/BarujaFe1) · [LinkedIn](https://www.linkedin.com/in/barujafe/)
 
----
+## Licença
 
-## 🔖 GitHub Repository Metadata
-
-### About sugerido
-```txt
-Support intelligence layer: classify messages, measure SLA, score refund risk and turn support symptoms into root-cause actions.
-```
-
-### Topics sugeridos
-```txt
-support-analytics
-customer-support
-sla
-refund-risk
-root-cause-analysis
-fastapi
-nextjs
-typescript
-python
-portfolio-project
-b2b-saas
-text-classification
-operational-analytics
-```
-
----
-
-## 👤 Autor / Author
-
-Desenvolvido por **Felipe Alirio Baruja**.
-
-- **Portfolio:** [barujafe.vercel.app](https://barujafe.vercel.app/)
-- **GitHub:** [@BarujaFe1](https://github.com/BarujaFe1)
-- **LinkedIn:** [Gustavo Felipe Alirio Baruja](https://www.linkedin.com/in/barujafe/)
-
----
-
-## 📄 Licença / License
-
-MIT License. Copyright (c) 2026 Felipe Alirio Baruja.
-O código está disponível sob a licença MIT caso o arquivo `LICENSE` esteja presente no repositório.
+MIT · Copyright (c) 2026 Felipe Alirio Baruja
