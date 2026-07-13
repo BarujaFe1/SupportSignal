@@ -5,7 +5,7 @@
 ![SupportSignal overview](./assets/hero-cover.png)
 
 <p align="center">
-  <a href="https://supportsignal-lab.vercel.app"><strong>Live Demo</strong></a>
+  <a href="https://supportsignal-lab-lake.vercel.app"><strong>Live Demo</strong></a>
   ·
   <a href="https://github.com/BarujaFe1/SupportSignal"><strong>GitHub</strong></a>
   ·
@@ -104,7 +104,18 @@ cd apps/api && pytest -q && ruff check app tests
 cd apps/web && npm test && npm run typecheck && npm run lint && npm run build
 ```
 
-Guia: [`docs/TESTING.md`](./docs/TESTING.md) · Deploy: [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)
+Parity Python↔TS: golden cases em [`data/fixtures/classifier_parity.json`](./data/fixtures/classifier_parity.json).
+
+Guia: [`docs/TESTING.md`](./docs/TESTING.md) · Deploy: [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) · Demo 3–5 min: [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md)
+
+## Claims permitidos vs proibidos
+
+| Permitido | Proibido |
+|---|---|
+| Lab de intelligence layer com heurísticas | “IA que resolve suporte” |
+| Risco de reembolso **heurístico** com drivers | Predição ML calibrada / decisão automática |
+| Seed sintético + mascaramento | Dados reais de clientes na demo pública |
+| FastAPI local + upload CSV | Helpdesk completo / auto-reply em produção |
 
 ## Decisões técnicas e trade-offs
 
@@ -149,14 +160,20 @@ Non-goals iniciais: helpdesk completo, auto-atendimento sem revisão, dependênc
 
 ## Screenshots
 
+Capturas reais do lab (seed sintético, sem PII). Manifesto: `assets/screenshots/CAPTURE_MANIFEST.json`.
+
 <p align="center">
   <img src="./assets/screenshots/01-support-intelligence-cockpit.png" alt="Cockpit" width="90%" />
 </p>
 
 <table>
   <tr>
-    <td><img src="./assets/screenshots/04-refund-risk-board.png" alt="Refund risk" /></td>
-    <td><img src="./assets/screenshots/06-weekly-support-memo.png" alt="Weekly memo" /></td>
+    <td><img src="./assets/screenshots/04-refund-risk-board.png" alt="Refund risk" /><br /><sub>Refund risk board</sub></td>
+    <td><img src="./assets/screenshots/06-weekly-support-memo.png" alt="Weekly memo" /><br /><sub>Weekly memo</sub></td>
+  </tr>
+  <tr>
+    <td><img src="./assets/screenshots/02-topic-classifier.png" alt="Topics" /><br /><sub>Topic classifier</sub></td>
+    <td><img src="./assets/screenshots/08-claims-honesty.png" alt="Claims" /><br /><sub>Claims honestos</sub></td>
   </tr>
 </table>
 

@@ -18,7 +18,7 @@ vercel link --yes --project supportsignal-lab
 vercel deploy --prod --yes
 ```
 
-Expected production alias pattern: `https://supportsignal-lab.vercel.app`
+Expected production alias pattern: `https://supportsignal-lab-lake.vercel.app`
 
 GitHub repository homepage should point to the Live Demo URL.
 

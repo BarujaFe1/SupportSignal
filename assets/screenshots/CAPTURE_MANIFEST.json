@@ -1,0 +1,15 @@
+{
+  "captured_at": "2026-07-13T20:33:03.553Z",
+  "base_url": "http://127.0.0.1:3000",
+  "note": "Synthetic seed only — no real customer PII.",
+  "files": [
+    "assets/screenshots/01-support-intelligence-cockpit.png",
+    "assets/screenshots/02-topic-classifier.png",
+    "assets/screenshots/03-sla-dashboard.png",
+    "assets/screenshots/04-refund-risk-board.png",
+    "assets/screenshots/05-root-cause-explorer.png",
+    "assets/screenshots/06-weekly-support-memo.png",
+    "assets/screenshots/07-action-backlog.png",
+    "assets/screenshots/08-claims-honesty.png"
+  ]
+}

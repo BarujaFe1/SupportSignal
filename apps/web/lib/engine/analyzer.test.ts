@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   analyzeMessages,
@@ -6,6 +9,24 @@ import {
   summarizeDemo,
 } from "./analyzer";
 import type { SupportMessage } from "./types";
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+const parity = JSON.parse(
+  readFileSync(path.join(repoRoot, "data/fixtures/classifier_parity.json"), "utf8")
+) as {
+  cases: Array<{
+    id: string;
+    message: SupportMessage;
+    expect: {
+      category: string;
+      sentiment: string;
+      urgency: string;
+      refund_risk: number;
+      sla_breach: boolean;
+      sla_hours: number | null;
+    };
+  }>;
+};
 
 const baseMsg = (overrides: Partial<SupportMessage> = {}): SupportMessage => ({
   message_id: "MSG-T1",
@@ -80,5 +101,21 @@ describe("SupportSignal browser engine", () => {
     const demo = summarizeDemo(messages);
     expect(demo.rows).toBe(3);
     expect(demo.channels).toContain("email");
+  });
+});
+
+describe("Python↔TS classifier parity (golden fixtures)", () => {
+  it("matches expected category, sentiment, urgency, risk and SLA", () => {
+    expect(parity.cases.length).toBeGreaterThan(0);
+    for (const caseRow of parity.cases) {
+      const got = classifyMessage(caseRow.message as SupportMessage);
+      const exp = caseRow.expect;
+      expect(got.category, caseRow.id).toBe(exp.category);
+      expect(got.sentiment, caseRow.id).toBe(exp.sentiment);
+      expect(got.urgency, caseRow.id).toBe(exp.urgency);
+      expect(got.refund_risk, caseRow.id).toBe(exp.refund_risk);
+      expect(got.sla_breach, caseRow.id).toBe(exp.sla_breach);
+      expect(got.sla_hours, caseRow.id).toBe(exp.sla_hours);
+    }
   });
 });

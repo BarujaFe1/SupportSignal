@@ -41,6 +41,7 @@ export function SectionNav() {
     { href: "#root-cause", label: "Root cause" },
     { href: "#memo", label: "Memo" },
     { href: "#actions", label: "Actions" },
+    { href: "#claims", label: "Claims" },
   ];
   return (
     <nav className="section-nav" aria-label="Cockpit sections">

@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "note": "Golden cases for Python↔TypeScript classifier parity. Risk scores are heuristic, not ML predictions.",
+  "cases": [
+    {
+      "id": "refund-chargeback",
+      "message": {
+        "message_id": "PARITY-001",
+        "channel": "email",
+        "subject": "Pedido de reembolso",
+        "body": "Quero reembolso imediato. Isso é inaceitável. Vou pedir chargeback.",
+        "created_at": "2026-06-01T10:00:00",
+        "first_response_at": "2026-06-01T11:00:00",
+        "resolved_at": null,
+        "customer_email": "cliente001@exemplo.com",
+        "customer_name": "Cliente 001",
+        "status": "open"
+      },
+      "expect": {
+        "category": "refund",
+        "sentiment": "negative",
+        "urgency": "high",
+        "refund_risk": 100,
+        "sla_breach": false,
+        "sla_hours": 1.0
+      }
+    },
+    {
+      "id": "billing-neutral",
+      "message": {
+        "message_id": "PARITY-002",
+        "channel": "whatsapp",
+        "subject": "Dúvida de fatura",
+        "body": "O valor cobrado na fatura da assinatura parece diferente do plano.",
+        "created_at": "2026-06-01T10:00:00",
+        "first_response_at": "2026-06-01T12:00:00",
+        "resolved_at": null,
+        "customer_email": "cliente002@exemplo.com",
+        "customer_name": "Cliente 002",
+        "status": "open"
+      },
+      "expect": {
+        "category": "billing",
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "refund_risk": 30,
+        "sla_breach": false,
+        "sla_hours": 2.0
+      }
+    },
+    {
+      "id": "bug-high-urgency",
+      "message": {
+        "message_id": "PARITY-003",
+        "channel": "email",
+        "subject": "Erro 500",
+        "body": "O botão salvar não funciona e aparece erro 500 com tela branca.",
+        "created_at": "2026-06-01T10:00:00",
+        "first_response_at": "2026-06-01T18:00:00",
+        "resolved_at": null,
+        "customer_email": "cliente003@exemplo.com",
+        "customer_name": "Cliente 003",
+        "status": "open"
+      },
+      "expect": {
+        "category": "bug",
+        "sentiment": "neutral",
+        "urgency": "high",
+        "refund_risk": 22,
+        "sla_breach": true,
+        "sla_hours": 8.0
+      }
+    },
+    {
+      "id": "open-no-first-response",
+      "message": {
+        "message_id": "PARITY-004",
+        "channel": "form",
+        "subject": "Login bloqueado",
+        "body": "Não consigo entrar na conta. O reset de senha não chega.",
+        "created_at": "2026-06-01T10:00:00",
+        "first_response_at": null,
+        "resolved_at": null,
+        "customer_email": "cliente004@exemplo.com",
+        "customer_name": "Cliente 004",
+        "status": "open"
+      },
+      "expect": {
+        "category": "account_access",
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "refund_risk": 10,
+        "sla_breach": true,
+        "sla_hours": null
+      }
+    },
+    {
+      "id": "onboarding-positive",
+      "message": {
+        "message_id": "PARITY-005",
+        "channel": "email",
+        "subject": "Como começar",
+        "body": "Acabei de assinar e não entendi o onboarding. Obrigado pela ajuda.",
+        "created_at": "2026-06-01T10:00:00",
+        "first_response_at": "2026-06-01T10:30:00",
+        "resolved_at": "2026-06-01T11:00:00",
+        "customer_email": "cliente005@exemplo.com",
+        "customer_name": "Cliente 005",
+        "status": "resolved"
+      },
+      "expect": {
+        "category": "onboarding",
+        "sentiment": "positive",
+        "urgency": "low",
+        "refund_risk": 10,
+        "sla_breach": false,
+        "sla_hours": 0.5
+      }
+    }
+  ]
+}

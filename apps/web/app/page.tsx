@@ -248,6 +248,27 @@ export default function HomePage() {
             </>
           )}
         </Panel>
+
+        <Panel id="claims" title="Claims honestos deste lab">
+          <div className="list">
+            <article>
+              <h3>O que este lab demonstra</h3>
+              <p className="muted">
+                Classificação heurística testável, SLA de primeira resposta, score de
+                risco de reembolso com drivers explicáveis, memo semanal e backlog de
+                causa raiz — sobre seed sintético.
+              </p>
+            </article>
+            <article>
+              <h3>O que este lab NÃO é</h3>
+              <p className="muted">
+                Não é helpdesk, não envia respostas a clientes, não usa LLM opaco no
+                MVP público, e o risco de reembolso é <strong>heurístico</strong> —
+                não uma predição estatística calibrada nem decisão automática.
+              </p>
+            </article>
+          </div>
+        </Panel>
       </div>
     </main>
   );

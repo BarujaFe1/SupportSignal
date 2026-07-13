@@ -35,7 +35,8 @@ Vitest covers the browser engine:
 - refund category + high risk;
 - SLA breach for slow high-urgency replies;
 - open ticket without first response;
-- aggregation → memo/actions/demo summary.
+- aggregation → memo/actions/demo summary;
+- **parity golden fixtures** shared with Python (`data/fixtures/classifier_parity.json`).
 
 ## CI
 
